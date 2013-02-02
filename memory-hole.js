@@ -1,3 +1,4 @@
+(function(){
 function scrollToBottom(callback)
 {
   function check(callback, lastHeight, count)
@@ -23,72 +24,40 @@ function scrollToBottom(callback)
   check(callback, 0, 0);
 }
 
-function openMenus()
+function clickElements(tagName, predicate)
 {
-  var a = document.evaluate("//a[contains(@class, 'uiPopoverButton')]",
+  var elements = document.evaluate('//' + tagName + '[' + predicate + ']',
       document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-  for (var i = 0; i < a.snapshotLength; i++) {
-    var obj = a.snapshotItem(i);
+  for (var i = 0; i < elements.snapshotLength; i++) {
+    var obj = elements.snapshotItem(i);
     if (obj) obj.click();
   }
+  return elements.snapshotLength;
+}
+
+function openMenus()
+{
+  clickElements('a', "contains(@class, 'uiPopoverButton')");
 }
 
 function deleteOrHide()
 {
-  var b1 = document.evaluate("//a[contains(@ajaxify, 'action=remove_content') or contains(@ajaxify, 'action=unlike') or contains(@ajaxify, 'action=unvote')]",
-      document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-  for (var i = 0; i < b1.snapshotLength; i++) {
-    var obj = b1.snapshotItem(i);
-    if (obj) obj.click();
-  }
-  var b2 = document.evaluate("//a[contains(@ajaxify, 'action=hide')]",
-      document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-  for (var i = 0; i < b2.snapshotLength; i++) {
-    var obj = b2.snapshotItem(i);
-    if (obj) obj.click();
-  }
-  var b3 = document.evaluate("//a[contains(@ajaxify, '/ajax/report.php?content_type=2')]",
-      document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-  for (var i = 0; i < b3.snapshotLength; i++) {
-    var obj = b3.snapshotItem(i);
-    if (obj) obj.click();
-  }
-  return [b1.snapshotLength, b2.snapshotLength, b3.snapshotLength];
+  var count1 = clickElements('a', "contains(@ajaxify, 'action=remove_content') or contains(@ajaxify, 'action=unlike') or contains(@ajaxify, 'action=unvote')");
+  var count2 = clickElements('a', "contains(@ajaxify, 'action=hide')");
+  var count3 = clickElements('a', "contains(@ajaxify, '/ajax/report.php?content_type=2')");
+  return [count1, count2, count3];
 }
 
 function clickConfirm()
 {
-  var c1 = document.evaluate("//input[@type='checkbox' and @name='untag']",
-      document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-  for (var i = 0; i < c1.snapshotLength; i++) {
-    var obj = c1.snapshotItem(i);
-    obj.click();
-  }
-  var c2 = document.evaluate("//input[@type='submit' and @value='Continue']",
-      document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-  for (var i = 0; i < c2.snapshotLength; i++) {
-    var obj = c2.snapshotItem(i);
-    obj.click();
-  }
-  var c3 = document.evaluate("//input[@type='button' and @name='ok' and (@value='Unlike' or @value='Delete' or @value='Unvote')]",
-      document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-  for (var i = 0; i < c3.snapshotLength; i++) {
-    var obj = c3.snapshotItem(i);
-    obj.click();
-  }
+  clickElements('input', "@type='checkbox' and @name='untag'");
+  clickElements('input', "@type='submit' and @value='Continue'");
+  clickElements('input', "@type='button' and @name='ok' and (@value='Unlike' or @value='Delete' or @value='Unvote')");
 }
 
 function clickOkay()
 {
-  var d = document.evaluate("//a[contains(@class, 'layerCancel') and @role='button']",
-      document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
-  for (var i = 0; i < d.snapshotLength; i++) {
-    var obj = d.snapshotItem(i);
-    if (obj.firstChild && obj.firstChild.firstChild && obj.firstChild.firstChild.nodeValue && obj.firstChild.firstChild.nodeValue == "Okay")
-    {
-      obj.click();
-    }
-  }
+  clickElements('a', "contains(@class, 'layerCancel') and @role='button' and contains(span/text(), 'Okay')");
 }
 
 function main()
@@ -111,3 +80,4 @@ function main()
 }
 
 main();
+})();
