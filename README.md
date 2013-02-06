@@ -1,1 +1,1 @@
-Please see https://divergentdave.github.com/memory-hole/
+Please see http://divergentdave.github.com/memory-hole/
