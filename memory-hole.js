@@ -1,40 +1,43 @@
 (function(){
+var click_data = [
+  ['a', "contains(@class, 'uiPopoverButton')"],
+  ['a', "contains(@ajaxify, 'action=remove_content') or contains(@ajaxify, 'action=unlike') or contains(@ajaxify, 'action=unvote')"],
+  ['a', "contains(@ajaxify, 'action=hide')"],
+  ['a', "contains(@ajaxify, '/ajax/report.php?content_type=2')"],
+  ['input', "@type='checkbox' and @name='untag'"],
+  ['input', "@type='submit' and @value='Continue'"],
+  ['input', "@type='button' and @name='ok' and (@value='Unlike' or @value='Delete' or @value='Unvote')"],
+  ['a', "contains(@class, 'layerCancel') and @role='button' and contains(span/text(), 'Okay')"]
+];
+
 function main()
 {
-  var totalDelete = 0;
-  var totalHide = 0;
-  var totalPhotoUntag = 0;
   var lastHeight = 0;
   var stallCount = 0;
+  var totals = new Array(click_data.length);
+  for (var i = 0; i < totals.length; i++) {
+    totals[i] = 0;
+  }
+
   function check()
   {
     var currentHeight = document.body.clientHeight;
-    var countMenu = clickElements('a', "contains(@class, 'uiPopoverButton')");
-    var countDelete = clickElements('a', "contains(@ajaxify, 'action=remove_content') or contains(@ajaxify, 'action=unlike') or contains(@ajaxify, 'action=unvote')");
-    var countHide = clickElements('a', "contains(@ajaxify, 'action=hide')");
-    var countPhotoUntag = clickElements('a', "contains(@ajaxify, '/ajax/report.php?content_type=2')");
-    var countCheckbox = clickElements('input', "@type='checkbox' and @name='untag'");
-    var countContinue = clickElements('input', "@type='submit' and @value='Continue'");
-    var countOk1 = clickElements('input', "@type='button' and @name='ok' and (@value='Unlike' or @value='Delete' or @value='Unvote')");
-    var countOk2 = clickElements('a', "contains(@class, 'layerCancel') and @role='button' and contains(span/text(), 'Okay')");
+    var anyChange = (currentHeight != lastHeight);
 
-    totalDelete = totalDelete + countDelete;
-    totalHide = totalHide + countHide;
-    totalPhotoUntag = totalPhotoUntag + countPhotoUntag;
-    if (currentHeight == lastHeight &&
-        countMenu == 0 &&
-        countDelete == 0 &&
-        countHide == 0 &&
-        countPhotoUntag == 0 &&
-        countCheckbox == 0 &&
-        countContinue == 0 &&
-        countOk1 == 0 &&
-        countOk2 == 0)
-    {
+    for (var i = 0; i < click_data.length; i++) {
+      var count = clickElements(click_data[i][0], click_data[i][1]);
+      totals[i] += count;
+      if (count > 0) {
+        anyChange = true;
+      }
+    }
+
+    if (!anyChange) {
       stallCount++;
       if (stallCount == 5)
       {
-        alert('Done, deleted ' + countDelete + ' items, hid ' + countHide + ' items, and untagged ' + countPhotoUntag + ' items');
+        var message = 'Done\n';
+        alert(message);
         return;
       }
     }
