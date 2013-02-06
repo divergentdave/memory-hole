@@ -1,27 +1,51 @@
 (function(){
-function scrollToBottom(callback)
+function main()
 {
-  function check(callback, lastHeight, count)
+  var totalDelete = 0;
+  var totalHide = 0;
+  var totalPhotoUntag = 0;
+  var lastHeight = 0;
+  var stallCount = 0;
+  function check()
   {
     var currentHeight = document.body.clientHeight;
-    if (document.body.clientHeight == lastHeight)
+    var countMenu = clickElements('a', "contains(@class, 'uiPopoverButton')");
+    var countDelete = clickElements('a', "contains(@ajaxify, 'action=remove_content') or contains(@ajaxify, 'action=unlike') or contains(@ajaxify, 'action=unvote')");
+    var countHide = clickElements('a', "contains(@ajaxify, 'action=hide')");
+    var countPhotoUntag = clickElements('a', "contains(@ajaxify, '/ajax/report.php?content_type=2')");
+    var countCheckbox = clickElements('input', "@type='checkbox' and @name='untag'");
+    var countContinue = clickElements('input', "@type='submit' and @value='Continue'");
+    var countOk1 = clickElements('input', "@type='button' and @name='ok' and (@value='Unlike' or @value='Delete' or @value='Unvote')");
+    var countOk2 = clickElements('a', "contains(@class, 'layerCancel') and @role='button' and contains(span/text(), 'Okay')");
+
+    totalDelete = totalDelete + countDelete;
+    totalHide = totalHide + countHide;
+    totalPhotoUntag = totalPhotoUntag + countPhotoUntag;
+    if (currentHeight == lastHeight &&
+        countMenu == 0 &&
+        countDelete == 0 &&
+        countHide == 0 &&
+        countPhotoUntag == 0 &&
+        countCheckbox == 0 &&
+        countContinue == 0 &&
+        countOk1 == 0 &&
+        countOk2 == 0)
     {
-      count++;
-      if (count == 5)
+      stallCount++;
+      if (stallCount == 5)
       {
-        callback();
+        alert('Done, deleted ' + countDelete + ' items, hid ' + countHide + ' items, and untagged ' + countPhotoUntag + ' items');
         return;
       }
     }
     else
     {
+      lastHeight = currentHeight;
       window.scrollTo(0, currentHeight);
     }
-    window.setTimeout(function() {
-      check(callback, currentHeight, count);
-    }, 1000);
+    window.setTimeout(check, 1000);
   }
-  check(callback, 0, 0);
+  check();
 }
 
 function clickElements(tagName, predicate)
@@ -37,50 +61,6 @@ function clickElements(tagName, predicate)
     }
   }
   return elements.snapshotLength;
-}
-
-function openMenus()
-{
-  clickElements('a', "contains(@class, 'uiPopoverButton')");
-}
-
-function deleteOrHide()
-{
-  var count1 = clickElements('a', "contains(@ajaxify, 'action=remove_content') or contains(@ajaxify, 'action=unlike') or contains(@ajaxify, 'action=unvote')");
-  var count2 = clickElements('a', "contains(@ajaxify, 'action=hide')");
-  var count3 = clickElements('a', "contains(@ajaxify, '/ajax/report.php?content_type=2')");
-  return [count1, count2, count3];
-}
-
-function clickConfirm()
-{
-  clickElements('input', "@type='checkbox' and @name='untag'");
-  clickElements('input', "@type='submit' and @value='Continue'");
-  clickElements('input', "@type='button' and @name='ok' and (@value='Unlike' or @value='Delete' or @value='Unvote')");
-}
-
-function clickOkay()
-{
-  clickElements('a', "contains(@class, 'layerCancel') and @role='button' and contains(span/text(), 'Okay')");
-}
-
-function main()
-{
-  scrollToBottom(function() {
-    openMenus();
-    window.setTimeout(function() {
-      var count = deleteOrHide();
-      window.setTimeout(function() {
-        clickConfirm();
-        window.setTimeout(function() {
-          clickOkay();
-          window.setTimeout(function() {
-            alert('Done, deleted ' + count[0] + ' items, hid ' + count[1] + ' items, and untagged ' + count[2] + ' items');
-          }, 5000);
-        }, 5000);
-      }, 5000);
-    }, 5000);
-  });
 }
 
 main();
