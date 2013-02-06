@@ -26,11 +26,15 @@ function scrollToBottom(callback)
 
 function clickElements(tagName, predicate)
 {
-  var elements = document.evaluate('//' + tagName + '[' + predicate + ']',
-      document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
+  var elements = document.evaluate('//' + tagName +
+      '[(' + predicate + ') and not(@data-mh-visited)]', document, null,
+      XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
   for (var i = 0; i < elements.snapshotLength; i++) {
     var obj = elements.snapshotItem(i);
-    if (obj) obj.click();
+    if (obj) {
+      obj.setAttribute('data-mh-visited', '');
+      obj.click();
+    }
   }
   return elements.snapshotLength;
 }
