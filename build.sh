@@ -10,7 +10,7 @@ Memory Hole
 ===========
 > "The power to destroy a thing is the absolute control over it." -- Paul-Muad'Dib, Dune by Frank Herbert
 
-Memory Hole is a bookmarklet that makes it easy to delete items from your Facebook activity log. You can use it to remove your personal information from your account, so it won't appear in your Timeline or the upcoming Graph Search interface.
+Memory Hole is a bookmarklet that makes it easy to erase your posts, comments, likes, and tags on Facebook. You can use it to remove your personal information from your account so that it won't appear in your Timeline or the upcoming Graph Search interface.
 
 Using it
 --------
@@ -24,7 +24,9 @@ echo '">Memory Hole</a>' >> README.md
 
 cat << 'END' >> README.md
 
-Next, go to your Facebook profile, and click on Activity Log. From the menu on the left, pick which category of information you would like to delete. ("Likes" is a good place to start, "All" is reserved for only the bravest) Click on the category label, take a deep breath, and then click on "Memory Hole" from your bookmarks. Your browser will then scroll down the page, automatically clicking delete on every item. Once this is done, you will get a report of how many items were removed or hidden.
+Go to your Facebook profile, click on "Memory Hole" from your bookmarks, and follow the directions from the overlay on the lower right corner of your screen.
+
+From your Activity Log, pick a category of information you would like to delete. ("Likes" is a good place to start, "All" is reserved for only the bravest) Click on the category label, check the confirmation box, and click "Delete everything in this list." Your browser will then scroll down the page, automatically clicking delete on every item. The overlay will count up how many items have been clicked and tell you when deletion is done.
 
 Disclaimers
 -----------
