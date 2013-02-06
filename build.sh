@@ -36,3 +36,5 @@ http://suicidemachine.org/download/Web_2.0_Suicide_Machine.pdf
 
 https://www.facebook.com/about/graphsearch
 END
+
+dos2unix --u2d README.md memory-hole.min.js
